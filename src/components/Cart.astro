@@ -1,0 +1,168 @@
+---
+
+---
+
+<header>
+    <h1>Cart</h1>
+</header>
+
+<ul id="items">
+    <!-- Items here -->
+</ul>
+
+<div id="total">
+    <!-- Total here -->
+</div>
+
+<style is:inline>
+    .summary, .modify {
+        display: block;
+        padding-top: 3px;
+        padding-bottom: 10px;
+    }
+</style>
+
+<script>
+    const itemsList = document.getElementById('items')
+    const divTotal = document.getElementById('total')
+
+    const inputName = document.getElementById('name') as HTMLInputElement
+    const inputPrice = document.getElementById('price') as HTMLInputElement
+
+    type Item = {
+        name: string;
+        price: number;
+        qty: number;
+    }
+
+    function handleClicks(e: MouseEvent) {
+        const element = e.target as HTMLElement
+        if (element.matches('.swatch')) {
+            const color = element.dataset.color!
+            const price = element.dataset.price!
+            addToCart(color, +price)
+        }
+    }
+
+    document.body.addEventListener('click', handleClicks)
+
+    const cart: Item[] = []
+
+    document.body.addEventListener('submit', (e) => {
+        e.preventDefault()
+        const name = inputName.value
+        const price = +inputPrice.value
+        addToCart(name, price)
+        showCart()
+    })
+
+    document.body.addEventListener('click', (e) => {
+        const element = e.target as HTMLElement
+
+        if (element && element.classList.contains('remove')) {
+            console.log(element.dataset.name)
+            removeFromCart(element.dataset.name!)
+        } else if (element && element.classList.contains('add-one')) {
+            addToCart(element.dataset.name!, +element.dataset.price!)
+        } else if (element && element.classList.contains('remove-one')) {
+            removeFromCart(element.dataset.name!, 1)
+        }
+    })
+
+    document.body.addEventListener('input', (e) => {
+        const element = e.target as HTMLInputElement
+
+        if (element.matches('.update')) {
+            const qty = parseInt(element.value)
+            const name = element.dataset.name!
+            updateCart(name, qty)
+        }
+    })
+
+    function addToCart(name: string, price: number) {
+        for (let i = 0; i < cart.length; i += 1) {
+            if (cart[i].name === name) {
+                cart[i].qty += 1
+                showCart()
+                return true
+            }
+        }
+        cart.push({ name, price, qty: 1 })
+        showCart()
+    }
+
+    function removeFromCart(name: string, qty = 0) {
+        console.log(name, qty)
+        for (let i = 0; i < cart.length; i += 1) {
+            if (cart[i].name === name) {
+                if (qty) {
+                    let newQty = cart[i].qty - qty
+                    if (newQty > 0) {
+                        cart[i].qty = newQty
+                    } else {
+                        cart.splice(i, 1)
+                    }
+                } else {
+                    cart.splice(i, 1)
+                }
+            }
+        }
+
+        showCart()
+    }
+
+    function showCart() {
+        let str = ''
+        for (let i = 0; i < cart.length; i += 1) {
+            str += `<li>
+                <span class="summary">
+                    <span>${cart[i].name} @ </span>
+                    <span>${formatPrice(cart[i].price)}</span> 
+                    <span>x</span>
+                    <span>${cart[i].qty}</span> 
+                    <span> = </span>  
+                    <span>${formatPrice(cart[i].qty * cart[i].price)}</span>
+                </span>
+                <span class="modify">
+                    <input class="update" data-name="${cart[i].name}" type="number" value="${cart[i].qty}">
+                    <button class="add-one" data-name="${cart[i].name}"> + </button>
+                    <button class="remove-one" data-name="${cart[i].name}"> - </button>
+                    <button class="remove" data-name="${cart[i].name}">remove</button>
+                </span>
+            </li>`
+        }
+
+        itemsList!.innerHTML = str
+        divTotal!.innerHTML = `$${getTotal()}`
+    }
+
+    function formatPrice(price: number) {
+        return new Intl.NumberFormat(navigator.language, {
+            style: 'currency',
+            currency: 'USD',
+            currencyDisplay: 'name'
+        }).format(price)
+    }
+
+    function getTotal() {
+        let total = 0
+        for (let i = 0; i < cart.length; i += 1) {
+            total += cart[i].price * cart[i].qty
+        }
+        return formatPrice(total)
+    }
+
+    function updateCart(name: string, qty: number) {
+        for (let i = 0; i < cart.length; i += 1) {
+            if (cart[i].name === name) {
+                cart[i].qty = qty
+                showCart()
+                return true
+            }
+        }
+        return false
+    }
+
+    showCart()
+    getTotal()
+</script>

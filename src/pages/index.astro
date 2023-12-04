@@ -1,0 +1,70 @@
+---
+import Layout from "../layouts/Layout.astro";
+import NavBar from "../components/NavBar.astro";
+import Banner from "../components/Banner.astro";
+import Contact from "../components/Contact.astro";
+import Swatches from "../components/Swatches.astro";
+import About from "../components/About.astro"
+import Popular from "../components/Popular.astro"
+import Cart from "../components/Cart.astro"
+---
+
+<Layout>
+    <main>
+        <!-- navbar - Style the navbar -->
+        <div id="nav">
+            <NavBar/>
+        </div>
+
+        <!-- banner -->
+        <section id="banner">
+            <Banner/>
+        </section>
+
+        <!-- about -->
+        <section id="about">
+            <About/>
+        </section>
+
+        <!-- Section Color Cards - This section contains three cards Style these -->
+        <section id="popular">
+            <Popular/>
+        </section>
+
+        <!-- Section Color Swatches - This section contains -->
+        <section id="swatches">
+            <Swatches/>
+        </section>
+
+        <section id="cart">
+            <Cart/>
+        </section>
+
+        <!-- Contact form -->
+        <section id="contact">
+            <Contact/>
+        </section>
+
+        <!-- Footer -->
+        <section id="footer">
+            Converted from HTML to {Astro.generator}!
+        </section>
+    </main>
+</Layout>
+
+<style>
+    /* This is so ugly I'm sorry I tried.
+    section {
+        min-height: 100vh;
+    } 
+    */
+
+    main {
+        width: 60%; /* 600px originally */
+        margin: auto;
+    }
+
+    #footer {
+        margin-top: 48px;
+    }
+</style>

@@ -1,0 +1,47 @@
+---
+
+---
+
+<header>
+    <h1>Colors</h1>
+    <p>At color.com we offer a range of high quality colors.</p>
+</header>
+
+<div class="swatches">
+    <!-- div.swatch -->
+</div>
+
+<style is:inline>
+    .swatch {
+        height: 50px;
+        width: 50px;
+        background-color: red;
+    }
+
+    .swatches {
+        display: grid;
+        /* what - https://stackoverflow.com/a/71606523 */
+        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+        grid-auto-rows: auto;
+        gap: 10px;
+    }
+</style>
+
+<script>
+    const swatchCount = 100;
+    for (let i = 1; i < (swatchCount + 1); i += 1) {
+        const swatch = `
+        <div 
+            class="swatch add-to-cart color-${i}" 
+            data-color="Color ${i}" 
+            data-price="${(Math.random() * 10).toFixed(2)}"></div>`;
+
+        const hue = i * (360 / swatchCount); // Distributes the hues evenly across 360 degrees
+
+        document.querySelector(".swatches")!.innerHTML += swatch;
+        (document.querySelector(`.color-${i}`)! as HTMLElement).
+            style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
+    }
+
+    for (let i = 0; i < swatchCount; i++) {}
+</script>
